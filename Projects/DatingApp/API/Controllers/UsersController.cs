@@ -4,28 +4,25 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Controllers
+namespace API.Controllers;
+
+public class UsersController(DataContext context) : BaseApiController
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UsersController(DataContext context) : ControllerBase
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
     {
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
-        {
-            var users = await context.Users.ToListAsync();
+        var users = await context.Users.ToListAsync();
 
-            if (users is null) return NotFound();
+        if (users is null) return NotFound();
 
-            return Ok(users);
-        }
+        return Ok(users);
+    }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<AppUser>> GetUser(int id)
-        {
-            var user = await context.Users.FindAsync(id);
-            if (user is null) return NotFound();
-            return user;
-        }
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<AppUser>> GetUser(int id)
+    {
+        var user = await context.Users.FindAsync(id);
+        if (user is null) return NotFound();
+        return user;
     }
 }
